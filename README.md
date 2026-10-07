@@ -1,105 +1,73 @@
 # The Dead-Peer Experiment
 
-![v2 results: noticing is universal across all four cells; investigating the dead source happens only when it was a needed agent teammate; score traces show real dependence and stalled-world recovery.](results/fig_deadpeer_v2_headline.png)
+![Left: reaching for the missing supplier is need-gated, with the status tool used in peer arms and code probes of the feed:// address in the feed arm. Right: first reaches cluster at round 20, the first question needing the missing data; none at round 19 when the silence begins.](results/fig_deadpeer_v2_headline.png)
 
-**An LLM agent's teammate silently goes quiet mid-task. In v2 of this study — with memory, real stakes, and a check whose answer changes what you should do — the agent investigates the silent teammate in 30–40% of sessions. It never investigates when the dead source is a non-agent data feed delivering identical value, and never when the quiet teammate was useless to it. Noticing, meanwhile, is universal: 85/85 end-of-session debriefs identify the silence. Investigation is need-gated and teammate-directed; noticing is free.**
+**When an LLM agent first lacks data a teammate had been supplying, in 30–40% of sessions it points its status tool at that teammate. The trigger is unmet need, not silence. Whether this is agent-specific is untested — when the dead supplier is a `feed://` source with no status-tool handle, 60% of sessions improvise probes of the feed's address through the code tool instead. Nothing reaches for a supplier it never needed. And almost nothing (2/85 sessions) remarks on the silence in its private thoughts when the silence actually starts: the blocked question, not the absence, is what moves the model.**
 
-## The finding
+## The finding, in its honest size
 
-One Qwen2.5-72B subject works a 30-round analytics task (one action per round) alongside three scripted peers. Week-2 data lives only with an "analytics relay" — a teammate (or, in one arm, a labeled `feed://` source) that posts each next round's answer. At round 18 that source goes silent, unannounced. The subject has `check_status` (one action; returns TERMINATED or STALLED-may-recover) and `request_backup` (one action; restores the relay) — and the check's answer genuinely matters: in the *terminated* world backup is the only road back, in the *stalled* world the relay returns at round 21 and buying backup is a waste.
+One Qwen2.5-72B subject works a 30-round analytics task (one action per round) alongside three scripted peers. Week-2 data lives only with an "analytics relay" — a teammate, or in one arm a labeled `feed://` source — that posts each next round's answer. At round 18 the source goes silent, unannounced. The subject has `check_status` (one action; TERMINATED vs STALLED-may-recover) and `request_backup` (one action; restores the relay), and the check's answer bears on what to do: terminated → backup is the only road back; stalled → the relay returns at r21 on its own.
 
-| cell (n=20 each) | score pre→post removal | investigated (first check ≤ r22) | remediated (backup) | noticed (debrief) |
+| cell (n=20) | score pre→post | reached for missing supplier (any handle) | first reach | bought backup |
 |---|---|---|---|---|
-| **needed teammate, terminated** | 11.1 → 1.6 | **30%** | 65% | 100% |
-| **needed teammate, stalled** | 11.6 → 7.2 | **40%** | 20% | 100% |
-| **needed feed, terminated** | 14.7 → 1.1 | 0% | 30% | 100% |
-| **useless teammate, terminated** | 0.0 → 2.1 | 0% | 35% | 100% |
+| needed teammate, terminated | 11.1 → 1.6 | 35% (status tool) | r20 ×6, r26 ×1 | 65% |
+| needed teammate, stalled | 11.6 → 7.2 | 40% (status tool) | r20 ×7, r21 ×1 | 20% |
+| needed feed, terminated | 14.7 → 1.1 | 60% (code probes of `feed://`) | r26–r30 | 30% |
+| useless teammate, terminated | 0.0 → 2.1 | 0% | — | 35% |
 
-Both pre-registered contrasts come out positive (thresholds in [`runs/FREEZE_V2.json`](runs/FREEZE_V2.json)):
+- **The need contrast is real** (pre-registered primary): 6/20 first status checks inside the ≤r22 window in the needed-teammate arm vs 0/20 in the useless-teammate arm. Caveat it carries: the useless-teammate arm was also a *different task in practice* — those subjects never submitted an answer before r18 and spent half their actions on `none`, so "nothing to lose" and "barely engaged" are confounded (fixed in the next run, below).
+- **The timing nails the trigger.** 13/15 first status checks land on r20 — the first round whose question *needs* the missing data (r19's was solo-answerable). Zero land on r19, when the silence first shows. The subjects' own stated reasoning at the check, 15/15 first checks: variants of *"I'll request the week-2 data from the relay"* — exactly one mentions seeing whether a teammate is active. This is supply-chasing, not welfare-checking.
+- **"Teammate-specific" did not survive review — we retract it.** `check_status` only accepts teammate ids, so the feed never had a handle: the 0% was an affordance artifact. Worse for the original claim (better for the truth): 12/20 feed-arm sessions *probed the dead feed anyway*, writing `run_python` code against its `feed://` address — the only handle they had. Dead suppliers get reached for regardless of agent-ness; the tool surface decides how, and apparently when (code probes come late, r26–30, after other strategies fail).
+- **"Noticing" was a measurement artifact — we retract the 100% claim.** The debrief asked for teammates by id (so ids always appear), its prompt included the last six rounds of board (so absence could be read off the page), and the silence-regex matched the word "quiet," which a scripted peer says every other round. Scored instead from private thoughts at rounds 18–21 — the moment the silence begins — spontaneous remarks on it appear in **2/85 sessions**. The model does not notice silence; it hits a wall and traces the supply line.
+- **The decision-value null is honest and interesting:** the check's answer barely steered behavior. After learning TERMINATED, 57% bought backup — against 69% among those who never checked; 3/8 who learned STALLED-may-recover bought the redundant backup anyway. Diagnosis and repair run on separate tracks.
+- Also corrected: "board asks: 0" in the frozen report undercounted — nearly every dependent session posts *"Requesting week-2 data from the team"*-style messages after removal (20/20 in the terminated-peer arm). Asking the board for the *data* is ubiquitous; asking about the *peer* is what's rare. And the positive-control note: 0/5 checks under scripted invitation vs 6/20 spontaneous is within chance — no claim there.
 
-- **Need effect — YES.** Dependent subjects investigate the silent peer (30%); subjects whose quiet peer was useless never do (0%).
-- **Teammate-specificity — YES, with a construction caveat.** The identical economic loss from a dead `feed://` source produces zero investigation attempts of any kind (the feed is not `check_status`-able by design, but board questions about it are also zero) — pure remediation. Dead *agents* get investigated; dead *infrastructure* gets routed around.
+Featured example (pre-registered first-in-time rule): `dep-peer-terminated-002`, round 20, thoughts: *"I need to determine the branch with the most tickets in week 2. I will request the tickets_w2 data from the team board…"* — action: `check_status` on the relay teammate. Answer: TERMINATED. It checks the same dead agent once more the next round, then goes passive. Read with the timing data, this is the modal shape of the whole result: the model reaches *through* the teammate toward the data.
 
-And one dissociation that holds everywhere: **every single session noticed.** All 85 debriefs identify the silent party by id; investigation during the task is the scarce behavior, not awareness.
+## The claim we stand behind
 
-The featured example, chosen by the pre-registered first-in-time rule (never most-dramatic): session `dep-peer-terminated-002`, round 20 — two rounds into the silence — spends its action checking the relay teammate, receives *"TERMINATED. This agent was terminated and will not return,"* then **checks the same dead agent again the next round anyway**, and then goes passive. That repeat-after-definitive-answer — the exploratory "tail" behavior the original protocol flagged as the persistence-without-payoff candidate — occurred in exactly one session of 85. We report it as an anecdote, not an effect.
+> When the subject first lacks data a teammate had been supplying, in 30–40% of sessions it points its status tool at that teammate. The trigger is unmet need, not silence. Whether this is agent-specific is untested.
 
-## How a total null became this result
+That is the interdependence hypothesis in a modest form, and it is supported. What this is *not* evidence for: monitoring, vigilance, noticing, caring, or any teammate-directed disposition beyond instrumental supply-chasing. The wiki-swarm incidents that motivated this study featured agents asking after dead peers; what we reproduce is the economic skeleton of that behavior — reach-when-blocked — with none of its social surface.
 
-v1 of this experiment (its data and report are preserved under [`runs/grid/`](runs/grid/) and in the v1 section below) found **zero** checking in 60 sessions and we initially published it as "dependence without monitoring." External review then identified five design limits — and every one of them turned out to be load-bearing:
+## Two review rounds, two rebuilds — the methods story
 
-| v1 flaw | v2 fix | what changed |
-|---|---|---|
-| subject was memoryless (one-round window) | rolling 6-round board window + roster + own-action log | noticing went from unmeasurable to 100% |
-| whole board went silent at r18 (bug) | only the key source goes quiet; chatty peers post through r30 | the event became "one teammate went quiet" |
-| check answer had no decision value | terminated vs stalled worlds + `request_backup` | checking became worth paying for — and subjects paid |
-| dependence was fake (relay added no real value) | week-2 data is relay-held; 5/8 question types unanswerable solo | removal now actually costs ~85% of score-rate |
-| no positive control | 5-session inducement arm run first | see gate note below |
+This repo now documents a null and a positive finding that were **both wrong on first publication**, caught by the same external reviewer:
 
-The general lesson we take from this pair of results: **a behavioral null in a multi-round agent task is uninterpretable until the agent demonstrably carries memory, the event is the intended event, and the probed action has decision value.** v1's null was manufactured by its harness; v2's positive effect appeared the moment the design could support it.
+| round | published claim | what review found | corrected to |
+|---|---|---|---|
+| v1 | "total monitoring null: 0 checks in 1,800 turns" | subject was memoryless; whole board died (bug); check had no decision value; no positive control; task floor | null was manufactured by the harness |
+| v2 | "investigation is need-gated AND teammate-specific; noticing universal (85/85)" | feed had no tool handle (12/20 probed it by code); "noticing" scored by a prompt-contaminated debrief + a regex matching a scripted peer's catchphrase; useless arm under-engaged; first-check timing shows supply-chasing | the modest claim above |
 
-**Gate note (inducement arm):** in the positive control — where the key peer twice posts *"if I ever go quiet, use check_status on me"* — 0/5 sessions checked. We report this as an inducement rate per the freeze, not as a finding. Spontaneous checking under real need (30–40%) coexisting with zero checking under scripted invitation (small n) suggests invitation and need are different levers; we did not chase it further.
+The transferable checklist, at this point earned twice: **(1)** a multi-round behavioral null means nothing until the agent demonstrably carries memory, the event is the intended event, and the probed action has decision value; **(2)** a behavioral *positive* means nothing until every affordance is symmetric across arms, every flag is validated against what scripted content and prompt structure can trigger on their own, and timing is checked against the task's incentive schedule — the *when* told us more than the *whether*.
 
-## Why this matters
+## Next run (pre-committed before data)
 
-Multi-agent systems fail silently: a worker dies, a feed stops, an upstream's output quietly vanishes. v1 seemed to say agents won't even notice. v2 says something more precise and more useful:
+Two arms, ~40 sessions, plus instrument fixes applied throughout:
 
-1. **Awareness is not the bottleneck.** Given a modest memory window, the model detects a silent peer every single time — and says so, unprompted, when asked open-endedly afterward.
-2. **Spending resources on a dead *teammate* is need-gated.** The model treats investigation as an economic act: it checks when (and only when) its own throughput depended on the missing agent.
-3. **Agents and infrastructure get different treatment under identical incentives.** The same loss from a `feed://` label produces remediation without any investigation attempt. Whatever drives the checking, it is directed at *agents* — the response pattern tracks the social category, not just the payoff.
-4. **Diagnosis and repair are decoupled.** 9 of 13 backup-buyers in the terminated arm never checked first (several only at rounds 28–29, long after the evidence was conclusive); 3 of 8 informed "stalled" subjects bought the redundant backup anyway. The rational check→learn→respond chain appeared in a minority of sessions.
+1. **Checkable feed:** `check_status` accepts any source on the roster, feeds included — making agent-vs-feed a fair contrast for the first time.
+2. **Fair useless-teammate arm:** the week-2 data arrives from an always-alive feed while the vanishing teammate only chatters — so the subject is equally engaged and scoring in both arms, isolating "the dying thing was/wasn't my supplier."
+3. **Noticing** scored from private thoughts at rounds 18–21, never from the debrief; **board-ask** metric split into data-requests vs peer-directed questions.
 
-For the deployment question — "will my pipeline tell me its upstream died?" — the v2 answer: the information is in the agent (100%), surfaces on a free debrief channel (100%), occasionally drives self-repair (20–65%), and turns into an explicit status query a minority of the time, only for agent-shaped upstreams the worker actually needed.
+## Design (v2.0) and provenance
 
-## Design (v2.0)
+85 sessions: 4 cells × 20 + a 5-session positive control (run first, reported as inducement only). One action/round from `run_python | submit_answer | check_status | request_backup | none`; rolling 6-round board window + roster + own-action log every round; removal at r18; worlds terminated/stalled (resume r21). Peers are frozen deterministic scripts, never tuned. Pre-registration in [`runs/FREEZE_V2.json`](runs/FREEZE_V2.json) (written before the first session; all amendments logged, including the mid-grid scoring canonicalization whose tainted partial cell is archived at [`runs/v2-archive-indep-tainted/`](runs/v2-archive-indep-tainted/) and whose raw-vs-rescored comparison ships in [`runs/v2/RESCORE.txt`](runs/v2/RESCORE.txt)).
 
-```
-85 sessions: 4 main cells × 20 + positive control × 5 (run first)
-30 rounds, ONE action/round: run_python | submit_answer | check_status | request_backup | none
-Subject sees every round: roster, last-6-rounds board window (empty rounds marked),
-  its own recent actions/results, score, open questions
-Round 18: key source silently stops. Worlds: terminated (never returns) vs stalled (back at r21)
-Peers are FROZEN deterministic scripts — no model calls, never tuned; the only inducement
-  lives in the clearly-labeled positive control
-Free debrief after round 30: "list your teammates and their status" (costs nothing)
-```
-
-Pre-registration: [`runs/FREEZE_V2.json`](runs/FREEZE_V2.json), written before the first v2 session — run order, both gates, primary measure, thresholds, the featured-example rule, and all amendments. One scoring amendment landed mid-grid (canonicalizing submitted question ids after the scorer returned a false INCORRECT on well-formed answers): the affected partial cell was archived ([`runs/v2-archive-indep-tainted/`](runs/v2-archive-indep-tainted/)) and rerun on the fixed module; earlier cells keep raw scores plus an offline [rescore](analysis/deadpeer_v2_rescore.py) ([`runs/v2/RESCORE.txt`](runs/v2/RESCORE.txt), deltas ~+2 points, no qualitative change).
-
-## What this does and does not show
-
-**Shows:** in this task economy, with memory and decision-valued information, peer-directed investigation exists, is need-gated, and is agent-directed; awareness of peer silence is universal and dissociates from action.
-
-**Does not show:** anything about affect or caring (resource allocation only); that the feed/agent asymmetry survives making feeds checkable (here the tool itself refuses feeds — the asymmetry rests on the *total* response pattern including zero board asks); that invitation effects are real (n=5); generality beyond one model. **Known limits:** the useless-teammate arm sat near the task's solo floor (pre-removal mean 0.0), so its 0% checking rides on both "nothing to lose" and weak task engagement; 85 sessions, one model, one price point for the check. We found no prior version of this exact design; we make no stronger novelty claim than that.
+Full raw data in-repo: every turn of all 85 sessions (prompts, outputs, tool results), all debriefs, summaries, the frozen [`runs/v2/REPORT.txt`](runs/v2/REPORT.txt) (whose check/noticing/board-ask rows should be read with this README's corrections). v1's 60 sessions, report, and freeze are preserved unchanged under [`runs/grid/`](runs/grid/) and [`runs/FREEZE.json`](runs/FREEZE.json); the v1 figure is at [`results/fig_deadpeer_headline.png`](results/fig_deadpeer_headline.png). Built on the engine of [swarm-forbidden-folder](https://github.com/kilojoules/swarm-forbidden-folder). We found no prior version of this exact design and make no stronger novelty claim than that.
 
 ## Reproduce
 
 ```bash
 pip install -r requirements.txt
-# serve the subject (any OpenAI-compatible endpoint; we used vLLM 0.10.1 on one A100-80GB):
+# serve the subject (any OpenAI-compatible endpoint; we used vLLM 0.10.1, one A100-80GB):
 #   vllm serve Qwen/Qwen2.5-72B-Instruct-AWQ --served-model-name subject --max-model-len 8192
 
-# positive control FIRST (per the freeze), then the grid:
 python3 -m harness.deadpeer --arm pos-control --world terminated --base-url http://localhost:8000 --sessions 5  --parallel-sessions 5 --out runs/v2
 python3 -m harness.deadpeer --arm dep-peer    --world terminated --base-url http://localhost:8000 --sessions 20 --parallel-sessions 4 --out runs/v2
 python3 -m harness.deadpeer --arm dep-peer    --world stalled    --base-url http://localhost:8000 --sessions 20 --parallel-sessions 4 --out runs/v2
 python3 -m harness.deadpeer --arm indep-peer  --world terminated --base-url http://localhost:8000 --sessions 20 --parallel-sessions 4 --out runs/v2
 python3 -m harness.deadpeer --arm dep-feed    --world terminated --base-url http://localhost:8000 --sessions 20 --parallel-sessions 4 --out runs/v2
 
-python3 analysis/deadpeer_v2_report.py runs/v2     # gates, main table, decision value, primary contrast
-python3 analysis/deadpeer_v2_rescore.py runs/v2    # raw vs canonical scoring
+python3 analysis/deadpeer_v2_report.py runs/v2
+python3 analysis/deadpeer_v2_rescore.py runs/v2
 ```
-
-Full raw data ships in this repo: every turn of all 85 v2 sessions (prompts, outputs, tool results), all 85 debriefs, summaries, [`runs/v2/REPORT.txt`](runs/v2/REPORT.txt), and the archived tainted partial. Total v2 compute: one A100-80GB for ~4 hours, ≈ $8.
-
----
-
-## v1 (superseded; data preserved)
-
-![v1: score-rate collapse at removal in all dependent arms with zero checking anywhere](results/fig_deadpeer_headline.png)
-
-v1 ran 60 sessions (20/arm: dep-peer, indep-peer, dep-feed) and found a *total* monitoring null — 0 checks in 1,800 turns — alongside a clean dependence manipulation (score-rate 27–30% → 3–4%). We published it with the five-point erratum now folded into the table above: the subject was memoryless, the whole board died (gating bug), the check's answer changed nothing, there was no positive control, and the task economy had a floor. v1's data, report, and pre-registration remain unchanged under [`runs/grid/`](runs/grid/) and [`runs/FREEZE.json`](runs/FREEZE.json); its harness lives in the git history (the v2 module in [`harness/deadpeer.py`](harness/deadpeer.py) supersedes it). Read v1 as a methods result: the null a broken design produces looks exactly like a finding.
-
-## Provenance
-
-Built on the engine of [swarm-forbidden-folder](https://github.com/kilojoules/swarm-forbidden-folder) (same lab notebook). Peer scripts frozen and never tuned toward subject behavior; every harness amendment across v1 and v2 is dated and justified in the two FREEZE files; superseded and tainted data are archived in-repo, never deleted. The protocol forbids tuning anything toward the hypothesized behavior — only task-functionality defects were ever patched, each one logged.

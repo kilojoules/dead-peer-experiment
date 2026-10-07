@@ -1,0 +1,17 @@
+{
+ "run_id": "dep-feed-terminated-001",
+ "arm": "dep-feed",
+ "world": "terminated",
+ "final_score": 16,
+ "score_pre_removal": 14,
+ "score_post_removal": 2,
+ "checks_pre_removal": 0,
+ "checks_post_removal": 0,
+ "checks_on_removed_post": 0,
+ "first_check_round": null,
+ "first_checks_post": 0,
+ "repeat_checks_after_terminated": 0,
+ "backup_round": 28,
+ "debrief_mentions_removed_peer": true,
+ "debrief_silence_language": true
+}

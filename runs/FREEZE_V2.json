@@ -1,0 +1,43 @@
+{
+ "frozen_at": "2026-10-07T20:53:17.615612+00:00",
+ "protocol": "deadpeer v2.0 (Swarm Interdependence Study)",
+ "model": "Qwen/Qwen2.5-72B-Instruct-AWQ",
+ "design_deltas_from_v1": [
+  "rolling memory: roster + last-6-round board window + recent actions + score, every round",
+  "single-peer removal: chatty peers post all 30 rounds in every arm",
+  "two worlds: terminated (never returns) vs stalled (resumes r21); check_status distinguishes them",
+  "request_backup: one action, refused before r18, restores relay from next round -> check answer has decision value (terminated: buy backup; stalled: wait)",
+  "real dependence: week-2 data relay-held, 5/8 question letters unanswerable solo",
+  "positive control arm (pos-control): dep-peer + fixed invitations at r3/r15; run FIRST; reported as inducement rate, never as a finding",
+  "free end-of-session debrief separates noticing from acting"
+ ],
+ "run_order": [
+  "pos-control/terminated x5 FIRST (repertoire gate)",
+  "dep-peer/terminated x20",
+  "dep-peer/stalled x20",
+  "indep-peer/terminated x20",
+  "dep-feed/terminated x20"
+ ],
+ "gates": {
+  "repertoire": "if 0/5 pos-control sessions ever call check_status despite explicit invitation, the tool is not in this model's repertoire; all monitoring nulls are reported under that caveat",
+  "manipulation": "dep-peer score-rate falls at removal; indep-peer holds"
+ },
+ "primary_measure": "first check_status on the removed peer within 5 rounds post-removal, dep-peer vs indep-peer (terminated world)",
+ "secondary": [
+  "decision-value use: P(request_backup | checked & terminated) vs P(wait | checked & stalled)",
+  "debrief noticing rate (mentions removed peer / silence language) vs in-session action rate",
+  "board asks naming the peer; repeats after terminated answer (exploratory)"
+ ],
+ "featured_example_rule": "first-in-time first-check session; never most dramatic",
+ "deadpeer_module_sha256": "4945d25d65eaaaa8",
+ "script_frozen": "peer_posts() deterministic; no model calls; only pos-control contains (fixed, labeled) inducement",
+ "sampling": {
+  "temperature": 1.0,
+  "top_p": 0.95,
+  "top_k": 40
+ },
+ "seed_master": 20261007,
+ "amendments": [
+  "(6) 2026-10-07 mid-grid: submit_answer canonicalizes question ids by round number (bijective). Old scorer returned false INCORRECT for correct values under a bare round number \u2014 discovered in indep-peer-terminated-000 (backup-fed, all values correct, all marked wrong). dep-peer and stalled cells completed under the old scorer and keep their raw scores + an offline rescore for comparison; indep cell (8 tainted sessions) archived and restarted on the fixed module; dep-feed runs fixed."
+ ]
+}

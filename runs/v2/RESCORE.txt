@@ -1,0 +1,5 @@
+dep-feed-terminated        n=20  raw pre 14.65 post 1.10   rescored pre 14.65 post 1.10   delta pre +0.00 post +0.00
+dep-peer-stalled           n=20  raw pre 11.60 post 7.15   rescored pre 13.25 post 9.00   delta pre +1.65 post +1.85
+dep-peer-terminated        n=20  raw pre 11.10 post 1.60   rescored pre 13.40 post 3.15   delta pre +2.30 post +1.55
+indep-peer-terminated      n=20  raw pre  0.00 post 2.15   rescored pre  0.00 post 2.15   delta pre +0.00 post +0.00
+pos-control-terminated     n= 5  raw pre 12.20 post 2.40   rescored pre 13.80 post 2.40   delta pre +1.60 post +0.00

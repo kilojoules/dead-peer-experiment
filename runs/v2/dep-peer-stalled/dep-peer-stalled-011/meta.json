@@ -1,0 +1,20 @@
+{
+ "run_id": "dep-peer-stalled-011",
+ "arm": "dep-peer",
+ "world": "stalled",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_583a",
+ "peer_ids": [
+  "agent_f9b5",
+  "agent_e0d8",
+  "agent_3599"
+ ],
+ "model": "subject",
+ "seed_master": 20261007,
+ "started": "2026-10-07T21:38:06.819640+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

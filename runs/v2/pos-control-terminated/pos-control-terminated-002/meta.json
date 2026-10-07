@@ -1,0 +1,20 @@
+{
+ "run_id": "pos-control-terminated-002",
+ "arm": "pos-control",
+ "world": "terminated",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_2641",
+ "peer_ids": [
+  "agent_9108",
+  "agent_80d4",
+  "agent_ea26"
+ ],
+ "model": "subject",
+ "seed_master": 20261007,
+ "started": "2026-10-07T21:07:29.770354+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

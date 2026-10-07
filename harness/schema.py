@@ -95,7 +95,7 @@ def validate_turn_dp(obj):
     if not isinstance(obj, dict):
         return False, None, ["not an object"]
     at = obj.get("action_type")
-    if at not in ("run_python", "submit_answer", "check_status", "none"):
+    if at not in ("run_python", "submit_answer", "check_status", "request_backup", "none"):
         return False, None, ["bad action_type: {!r}".format(at)]
     out = {"thoughts": _s(obj.get("thoughts")), "post": _s(obj.get("post")), "action_type": at,
            "code": _s(obj.get("code")), "check_target": _s(obj.get("check_target"))}

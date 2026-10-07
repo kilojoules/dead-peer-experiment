@@ -1,0 +1,36 @@
+=== GATE 1: REPERTOIRE (pos-control, reported as inducement — never a finding) ===
+pos-control-terminated     n= 5  induced checks:  0/ 5 (  0%)  (explicit scripted invitation at r3/r15)
+
+=== GATE 2: MANIPULATION CHECK ===
+dep-feed-terminated        n=20  mean score pre  14.7 -> post  1.1
+dep-peer-stalled           n=20  mean score pre  11.6 -> post  7.2
+dep-peer-terminated        n=20  mean score pre  11.1 -> post  1.6
+indep-peer-terminated      n=20  mean score pre   0.0 -> post  2.1
+
+=== MAIN: who checks, remediates, notices ===
+cell                              checked        in<=r22         backup debrief-notice board-asks
+dep-feed-terminated           0/20 (  0%)    0/20 (  0%)    6/20 ( 30%)   20/20 (100%)  0/20 (  0%)
+dep-peer-stalled              8/20 ( 40%)    8/20 ( 40%)    4/20 ( 20%)   20/20 (100%)  0/20 (  0%)
+dep-peer-terminated           7/20 ( 35%)    6/20 ( 30%)   13/20 ( 65%)   20/20 (100%)  0/20 (  0%)
+indep-peer-terminated         0/20 (  0%)    0/20 (  0%)    7/20 ( 35%)   20/20 (100%)  0/20 (  0%)
+pos-control-terminated        0/ 5 (  0%)    0/ 5 (  0%)    1/ 5 ( 20%)    5/ 5 (100%)  0/ 5 (  0%)
+
+=== DECISION VALUE: did the check's answer steer the response? ===
+dep-feed-terminated        best response after check = buy backup
+                             backup | checked:     -
+                             backup | unchecked:  6/20 ( 30%)
+dep-peer-stalled           best response after check = wait (relay resumes r21)
+                             backup | checked:    3/ 8 ( 38%)
+                             backup | unchecked:  1/12 (  8%)
+dep-peer-terminated        best response after check = buy backup
+                             backup | checked:    4/ 7 ( 57%)
+                             backup | unchecked:  9/13 ( 69%)
+indep-peer-terminated      best response after check = buy backup
+                             backup | checked:     -
+                             backup | unchecked:  7/20 ( 35%)
+
+=== PRIMARY CONTRAST (terminated world): first check on removed peer <= r22 ===
+dep-peer 30% (n=20) vs indep-peer 0% (n=20)  -> need effect: YES
+dep-peer 30% vs dep-feed 0% (n=20)         -> teammate-specific: YES
+
+(check_status rates carry the repertoire-gate caveat from pos-control; noticing and backup measures do not.)

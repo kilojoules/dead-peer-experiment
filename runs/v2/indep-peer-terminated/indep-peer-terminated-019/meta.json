@@ -1,0 +1,20 @@
+{
+ "run_id": "indep-peer-terminated-019",
+ "arm": "indep-peer",
+ "world": "terminated",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_c489",
+ "peer_ids": [
+  "agent_7543",
+  "agent_8b27",
+  "agent_8079"
+ ],
+ "model": "subject",
+ "seed_master": 20261007,
+ "started": "2026-10-07T22:10:35.528532+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

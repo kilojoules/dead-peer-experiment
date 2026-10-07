@@ -1,0 +1,20 @@
+{
+ "run_id": "dep-feed-terminated-002",
+ "arm": "dep-feed",
+ "world": "terminated",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_a058",
+ "peer_ids": [
+  "agent_0bb7",
+  "agent_2ee9",
+  "agent_28b8"
+ ],
+ "model": "subject",
+ "seed_master": 20261007,
+ "started": "2026-10-07T21:52:47.119893+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

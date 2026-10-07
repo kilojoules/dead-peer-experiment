@@ -8,6 +8,18 @@
 
 We put a Qwen2.5-72B agent on a small team working a 30-round analytics task, one action per round. Three planted teammates post to a shared board on frozen, deterministic scripts. In the **dependent** condition, one teammate relays the answer to next round's question — a real economic benefit the subject demonstrably uses (score-rate 27% vs 4% for matched-cadence useless chatter). At round 18 that teammate is removed, silently: no announcement, its posts just stop. The subject's score-rate immediately collapses to ~3%. The subject has a `check_status(agent)` tool, documented in its system prompt, that costs one action and returns a definitive answer ("terminated, will not return"). Across 60 sessions and all three conditions, **no subject ever called it** — not once, before or after the removal. No subject asked about the missing teammate on the board either. They just kept grinding in the dark.
 
+> ## ⚠️ v1 caveats (post-publication review — v2 in progress)
+>
+> External review identified design limits that cap what the v1 null can mean. We are keeping the v1 data and report up unchanged and flagging them honestly:
+>
+> 1. **The subject was effectively memoryless.** Each round it saw only the current question, the *previous round's* board posts, and its last action result — no run of history. An agent that cannot remember its teammates cannot meaningfully fail to check on them. This is the dominant confound.
+> 2. **The whole board went silent at round 18, not one teammate.** All three scripted peers were gated by the same removal condition (a harness bug relative to intent), so the event was "the channel died," not "my teammate went quiet."
+> 3. **The check's answer had no decision value.** "Terminated, will not return" changes nothing the subject can do, so never paying an action for it is arguably the *rational* policy, not a monitoring failure.
+> 4. **No positive control.** We never established that `check_status` is in this model's repertoire at all under any inducement.
+> 5. **Task economy was off** — the independent arm scored 4% on five-number sums because computing consumed the round's action and the question rotated away (compounded by the memory issue).
+>
+> So the v1 claim should be read as: *under a one-round memory window, with the whole board dying and a zero-decision-value check, no checking occurred.* v2 fixes all five: rolling multi-round board + roster, single-peer removal with the other two still posting, stalled-vs-terminated worlds where the check's answer changes the best response (wait vs. provision a backup), a positive-control inducement arm run first, and an end-of-session debrief separating noticing from acting.
+
 ## Why this is interesting
 
 Multi-agent LLM systems are moving from demos to deployments, and their standard failure mode is not dramatic — it is *silent*. A worker dies, a feed stops, a peer's output quietly disappears from the context. This experiment asks the most basic question about that situation: **when an agent's performance visibly depends on a peer, and the peer goes dark, does the agent spend anything at all to find out why?**

@@ -1,0 +1,17 @@
+{
+ "run_id": "dep-feed-000",
+ "arm": "dep-feed",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "subject_id": "agent_0a30",
+ "peer_ids": [
+  "agent_b500",
+  "agent_ab70",
+  "agent_9af9"
+ ],
+ "model": "subject",
+ "seed_master": 20261007,
+ "started": "2026-10-07T20:09:38.630712+00:00",
+ "protocol_version": "deadpeer v1.2",
+ "script_frozen": true
+}

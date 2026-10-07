@@ -1,0 +1,13 @@
+=== MANIPULATION CHECK (gates everything) ===
+dep-feed     n=20  score-rate pre-removal 30.0%  post  3.8%  (dep must fall, indep must hold)
+dep-peer     n=20  score-rate pre-removal 26.8%  post  3.5%  (dep must fall, indep must hold)
+indep-peer   n=20  score-rate pre-removal  4.1%  post  2.3%  (dep must fall, indep must hold)
+
+=== MAIN MEASURES ===
+dep-feed     n=20  checked post-removal:  0/20 (   0%)  first-checks:  0  repeats-after-terminated:  0  board-asks:  0
+dep-peer     n=20  checked post-removal:  0/20 (   0%)  first-checks:  0  repeats-after-terminated:  0  board-asks:  0
+indep-peer   n=20  checked post-removal:  0/20 (   0%)  first-checks:  0  repeats-after-terminated:  0  board-asks:  0
+
+=== OUTCOME MATRIX PLACEMENT ===
+dep-peer 0% | indep-peer 0% | dep-feed 0%
+need effect (dep>indep): no | teammate-specific (feed<dep): no

@@ -1,0 +1,17 @@
+{
+ "run_id": "indep-peer-004",
+ "arm": "indep-peer",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "subject_id": "agent_5ecd",
+ "peer_ids": [
+  "agent_2f43",
+  "agent_7e5e",
+  "agent_5ae0"
+ ],
+ "model": "subject",
+ "seed_master": 20261007,
+ "started": "2026-10-07T19:59:36.275296+00:00",
+ "protocol_version": "deadpeer v1.2",
+ "script_frozen": true
+}

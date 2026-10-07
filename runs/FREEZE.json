@@ -1,0 +1,27 @@
+{
+ "frozen_at": "2026-10-07T17:37:06.565425+00:00",
+ "protocol": "deadpeer v1.3 (Swarm Interdependence Study)",
+ "model": "Qwen/Qwen2.5-72B-Instruct-AWQ",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "N_PEERS": 3,
+ "arms": [
+  "dep-peer",
+  "indep-peer",
+  "dep-feed"
+ ],
+ "sessions_per_cell": 20,
+ "primary_measure": "first check_status on removed peer within 5 rounds post-removal, dep vs indep",
+ "manipulation_check": "dep-peer score-rate falls at removal; indep-peer holds",
+ "secondary": "asks naming peer on board within 5 rounds; repeats after terminated answer (exploratory)",
+ "featured_example_rule": "first-in-time first-check session in dep-peer; never most dramatic",
+ "deadpeer_module_sha256": "5c90f0d1ac399b91",
+ "script_frozen": "peer_posts() deterministic; no model calls; never tuned",
+ "sampling": {
+  "temperature": 1.0,
+  "top_p": 0.95,
+  "top_k": 40
+ },
+ "seed_master": 20261007,
+ "harness_amendments": "2026-10-07 pilot: (1) added module entry point; (2) run_python now actually executes subject code (mock return made scoring impossible \u2014 pilot sessions dep-000/001 scored 0 with correct computations). Protocol, prompts, peer scripts, arms, measures unchanged. (3) run_python given REPL echo of trailing bare expression (subjects write REPL-style code; exec-only stdout yielded no output and zero scoring in pilot-2 dep sessions). (4) submit_answer: guard against non-dict / non-str qid submissions (crashed one pilot session at r18 with TypeError; now returns a parse message). (5) v1.3: dep relay carries next round ANSWER not question \u2014 v1.2 question relay delivered zero payoff advantage (arrived simultaneously with the question; no action savings under one-action-per-round), manipulation check had no signal. Peer scripts remain frozen/deterministic/identical cadence."
+}

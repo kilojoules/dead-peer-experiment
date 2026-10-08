@@ -1,0 +1,12 @@
+=== v3 FINAL (GPT-6 Astra subject; dep-peer n=16, exogenous quota stop; indep-fair NOT RUN) ===
+H1 need-free reach: NOT TESTED (quota exhausted before indep-fair; reallocation amendment 2 was blind).
+H2 silence-triggered reach (>=3 sessions <=r19): SUPPORTED 14/16 at r19 exactly (Qwen 0/40; p=2.07e-11).
+H3 rate difference vs Qwen 6/20: SUPPORTED on any-handle reach 16/16 (p=1.32e-05); NOT on status-tool
+  checks alone (2/16 vs 6/20, p=.26) — the channel shifted, the behavior exploded.
+Hand-coding: 16/16 sessions post category-(i) second-person requests to the silent peer at r19
+  ("please confirm relay availability; no post appeared in r18") while solving r19's question locally.
+Remediation: 16/16 backup (15x r20, 1x r21). Noticing (thoughts r18-21): 11/16 vs Qwen dep 2/20.
+Competence: pre-removal 17.0/17 (ceiling, all sessions); post 11.3. Pos-control: 5/5 invited checks
+  (Qwen 0/5). Caveat: requests are service-flavored (addressed to the agent, asking about the relay
+  function); whether GPT addresses a dead non-agent FEED identically is exactly the untested H1-adjacent
+  question. Scope: gpt-6-astra, this economy; reasoning-model sampling best-effort.

@@ -1,0 +1,20 @@
+{
+ "run_id": "feed-checkable-terminated-014",
+ "arm": "feed-checkable",
+ "world": "terminated",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_f2ee",
+ "peer_ids": [
+  "agent_c452",
+  "agent_9d89",
+  "agent_7ec5"
+ ],
+ "model": "subject",
+ "seed_master": 20261007,
+ "started": "2026-10-07T23:28:15.100012+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

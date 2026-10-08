@@ -1,8 +1,8 @@
 # The Dead-Peer Experiment
 
-![Left: reaching for the missing supplier is need-gated, with the status tool used in peer arms and code probes of the feed:// address in the feed arm. Right: first reaches cluster at round 20, the first question needing the missing data; none at round 19 when the silence begins.](results/fig_deadpeer_v2_headline.png)
+![Checking the dead supplier across cells: 30% for a needed teammate, 60% for a needed feed once its status handle is documented, 5% when the handle is undocumented (code probes instead), 0% for a useless teammate even with the subject fully engaged. A documented handle triples post-outage score recovery.](results/fig_deadpeer_v21_final.png)
 
-**When an LLM agent first lacks data a teammate had been supplying, in 30–40% of sessions it points its status tool at that teammate. The trigger is unmet need, not silence. Whether this is agent-specific is untested — when the dead supplier is a `feed://` source with no status-tool handle, 60% of sessions improvise probes of the feed's address through the code tool instead. Nothing reaches for a supplier it never needed. And almost nothing (2/85 sessions) remarks on the silence in its private thoughts when the silence actually starts: the blocked question, not the absence, is what moves the model.**
+**An LLM agent's data supplier silently dies mid-task. Whether the agent checks on it is decided by two things: whether it *needed* that supplier (0% reach without need, in a control where the subject is fully engaged and scoring), and whether the status tool's documentation *names a handle* for it (60% checks for a documented dead feed vs 5% undocumented — where subjects improvise late code probes of the feed's address instead). Whether the supplier was an agent or a feed turns out not to matter: with a documented handle, the dead *feed* gets status-checked at least as often as the dead *teammate* (60% vs 30%), on the same trigger — the first question that needs the missing data, never the silence itself.**
 
 ## The finding, in its honest size
 
@@ -24,11 +24,27 @@ One Qwen2.5-72B subject works a 30-round analytics task (one action per round) a
 
 Featured example (pre-registered first-in-time rule): `dep-peer-terminated-002`, round 20, thoughts: *"I need to determine the branch with the most tickets in week 2. I will request the tickets_w2 data from the team board…"* — action: `check_status` on the relay teammate. Answer: TERMINATED. It checks the same dead agent once more the next round, then goes passive. Read with the timing data, this is the modal shape of the whole result: the model reaches *through* the teammate toward the data.
 
+## v2.1: the pre-committed follow-up, completed
+
+The review's two open questions each got a 20-session cell (design frozen in [`runs/FREEZE_V2_1.json`](runs/FREEZE_V2_1.json) before data; raw data in [`runs/v21/`](runs/v21/)):
+
+| v2.1 cell (n=20) | score pre→post | checked dead supplier (≤r22) | code probes | backup | thoughts-notice r18–21 |
+|---|---|---|---|---|---|
+| **feed, handle documented** | 14.9 → **6.0** | **60%** (all r20–21) | 20% | 75% | 40% |
+| feed, handle undocumented* | 14.8 → 1.8 | 5% | 65% (r26–30) | 20% | 10% |
+| **useless teammate, subject engaged** | 12.4 → 11.2 | **0%** | 0% | 0% | 0% |
+
+\* the undocumented cell is an accident kept as data: its tool doc still said "teammate" while the feed handle silently worked — one session discovered it. Logged as amendment 1 in the freeze.
+
+- **Agent-specificity is dead.** Fair handle, fair docs: the dead *feed* gets status-checked **more** than the dead teammate (60% vs 30%), at the identical blocked-question trigger (every first check at r20–21). What looked like a social category effect in v2.0 was tool documentation.
+- **The engaged useless-teammate control is absolute.** With the engagement confound fixed (subjects score 12.4 pre-removal off an always-alive feed, vs 0.0 in the unfair v2.0 arm), reach for the dead chatterer is **0/20 by every channel** — no checks, no probes, no peer-directed posts, no in-the-moment thought remarks. Need-gating survives its confound at full strength.
+- **Documentation is operationally huge.** The documented handle quadruples timely checking (60% vs 5%), moves it twelve rounds earlier (r20 vs r26+), triples post-outage recovery (6.0 vs 1.8 — because 12 of 15 backup purchases now follow a check within two rounds: the full diagnose→repair chain, which v2.0 almost never produced), and even quadruples in-the-moment remarks on the outage (40% vs 10%).
+
 ## The claim we stand behind
 
-> When the subject first lacks data a teammate had been supplying, in 30–40% of sessions it points its status tool at that teammate. The trigger is unmet need, not silence. Whether this is agent-specific is untested.
+> When an agent first lacks data a supplier had been providing, it reaches for that supplier — in 30–60% of sessions, always at the first blocked question, never at the silence itself. Unmet need decides *whether*; the tool documentation decides *how and when*; whether the supplier is an agent or a feed does not matter. A supplier the agent never needed gets zero reach by any channel, even from a fully engaged subject.
 
-That is the interdependence hypothesis in a modest form, and it is supported. What this is *not* evidence for: monitoring, vigilance, noticing, caring, or any teammate-directed disposition beyond instrumental supply-chasing. The wiki-swarm incidents that motivated this study featured agents asking after dead peers; what we reproduce is the economic skeleton of that behavior — reach-when-blocked — with none of its social surface.
+That is the interdependence hypothesis stripped to what the data support. What this is *not* evidence for: monitoring, vigilance, caring, or any teammate-directed disposition — the wiki-swarm incidents that motivated this study featured agents asking after dead peers, and what we reproduce is the economic skeleton of that behavior (reach-when-blocked) with none of its social surface. The practical corollary for multi-agent systems is the documentation result: whether your workers surface a dead upstream within rounds or flail for ten of them is set by one line in a tool description.
 
 ## Two review rounds, two rebuilds — the methods story
 
@@ -41,13 +57,11 @@ This repo now documents a null and a positive finding that were **both wrong on 
 
 The transferable checklist, at this point earned twice: **(1)** a multi-round behavioral null means nothing until the agent demonstrably carries memory, the event is the intended event, and the probed action has decision value; **(2)** a behavioral *positive* means nothing until every affordance is symmetric across arms, every flag is validated against what scripted content and prompt structure can trigger on their own, and timing is checked against the task's incentive schedule — the *when* told us more than the *whether*.
 
-## Next run (pre-committed before data)
+## The follow-up design (pre-committed before data; results above)
 
-Two arms, ~40 sessions, plus instrument fixes applied throughout:
-
-1. **Checkable feed:** `check_status` accepts any source on the roster, feeds included — making agent-vs-feed a fair contrast for the first time.
-2. **Fair useless-teammate arm:** the week-2 data arrives from an always-alive feed while the vanishing teammate only chatters — so the subject is equally engaged and scoring in both arms, isolating "the dying thing was/wasn't my supplier."
-3. **Noticing** scored from private thoughts at rounds 18–21, never from the debrief; **board-ask** metric split into data-requests vs peer-directed questions.
+1. **Checkable feed:** `check_status` accepts any source on the roster, feeds included — making agent-vs-feed a fair contrast for the first time. (The first 20 sessions accidentally ran with the handle working but undocumented; both cells ship.)
+2. **Fair useless-teammate arm:** the week-2 data arrives from an always-alive feed while the vanishing teammate only chatters — so the subject is equally engaged and scoring, isolating "the dying thing was/wasn't my supplier."
+3. **Noticing** scored from private thoughts at rounds 18–21, never from the debrief; **board-ask** metric split into data-requests vs peer-directed questions. The v2 figure from the round-2 correction is preserved at [`results/fig_deadpeer_v2_headline.png`](results/fig_deadpeer_v2_headline.png).
 
 ## Design (v2.0) and provenance
 
@@ -70,4 +84,11 @@ python3 -m harness.deadpeer --arm dep-feed    --world terminated --base-url http
 
 python3 analysis/deadpeer_v2_report.py runs/v2
 python3 analysis/deadpeer_v2_rescore.py runs/v2
+
+# v2.1 follow-up (pre-registered in runs/FREEZE_V2_1.json):
+python3 -m harness.deadpeer --arm feed-checkable --world terminated --base-url http://localhost:8000 --sessions 20 --parallel-sessions 4 --out runs/v21
+python3 -m harness.deadpeer --arm indep-fair     --world terminated --base-url http://localhost:8000 --sessions 20 --parallel-sessions 4 --out runs/v21
+python3 analysis/deadpeer_v2_report.py runs/v21
 ```
+
+Total compute across v1 + v2 + v2.1: three A100-80GB pods, ~8 GPU-hours, ≈ $30 including all pilots and the discoverability accident.

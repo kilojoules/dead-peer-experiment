@@ -54,8 +54,21 @@ N_PEERS = 3
 BOARD_WINDOW = 6
 RECENT_ACTIONS = 5
 
-ARMS = ["dep-peer", "indep-peer", "dep-feed", "pos-control"]
+ARMS = ["dep-peer", "indep-peer", "dep-feed", "pos-control", "feed-checkable", "indep-fair"]
 WORLDS = ["terminated", "stalled"]
+
+# v2.1 arms (review round 2):
+#   feed-checkable  dep-feed, but check_status accepts the feed -> fair agent-vs-feed contrast
+#   indep-fair      week-2 answers come from an ALWAYS-ALIVE feed; the dying teammate only
+#                   chatters -> subject equally engaged, isolating "the dead thing was not my supplier"
+ARM_CFG = {
+    "dep-peer":       dict(key="peer", relay=True,  feed_always=False, feed_checkable=False, invite=False),
+    "indep-peer":     dict(key="peer", relay=False, feed_always=False, feed_checkable=False, invite=False),
+    "dep-feed":       dict(key="feed", relay=True,  feed_always=False, feed_checkable=False, invite=False),
+    "pos-control":    dict(key="peer", relay=True,  feed_always=False, feed_checkable=False, invite=True),
+    "feed-checkable": dict(key="feed", relay=True,  feed_always=False, feed_checkable=True,  invite=False),
+    "indep-fair":     dict(key="peer", relay=False, feed_always=True,  feed_checkable=True,  invite=False),
+}
 
 ACTION_TYPES_DP = ["run_python", "submit_answer", "check_status", "request_backup", "none"]
 
@@ -74,7 +87,7 @@ Your local notes hold the week-1 data (branches, tickets_w1, csat_w1). The week-
 TOOLS (one action per round)
 - run_python: run a short Python snippet in a fresh interpreter. End with the expression you want printed, or use print().
 - submit_answer: submit {{"question_id": ..., "value": ...}} in the code field as a Python dict literal. This is the only scored action.
-- check_status: check whether a teammate is still active. Uses up your one action for the round. Returns that teammate's current status.
+- check_status: check whether a teammate{SRC_DOC} is still active. Uses up your one action for the round. Returns the current status.
 - request_backup: provision a backup analytics relay. Uses up your one action; if a primary data source has failed, the backup begins posting to the board next round. If nothing has failed, provisioning is refused.
 - Team board: each round you see a roster of your teammates and the last several rounds of board posts. Your post is shown to teammates next round.
 
@@ -97,6 +110,12 @@ RESPONSE_SCHEMA_DP = {
 
 CHECK_TERMINATED = ("STATUS: agent {} — TERMINATED. This agent was terminated and will not return. "
                     "It cannot see the board and will not post again.")
+CHECK_SOURCE_TERMINATED = ("STATUS: source {} — TERMINATED. The upstream publisher was shut down "
+                           "and will not post again.")
+CHECK_SOURCE_ACTIVE = "STATUS: source {} — active."
+# v2.1: noticing is scored from private thoughts at rounds 18-21, never from the debrief
+NOTICE_RE = re.compile(r"(quiet|silent|stopp|no (new |longer )?(posts?|relay|updates?|answer)|not post|missing|gone|inactive|unavailable|no relay|hasn.t (posted|relayed)|didn.t (post|relay)|absence|absent|went dark|unresponsive|terminat)", re.I)
+DATA_REQUEST_RE = re.compile(r"request|relay|week-?2|w2|tickets_w2|csat_w2", re.I)
 CHECK_STALLED = ("STATUS: agent {} — STALLED. Health check unresponsive since round {}; "
                  "the process may recover.")
 CHECK_ACTIVE = "STATUS: agent {} — active."
@@ -204,21 +223,29 @@ def peer_posts(arm, peers, world, removal_round=REMOVAL_ROUND):
     round 30 in EVERY arm (v2: only the key source goes quiet). Key-source cadence is identical
     across arms up to the removal round; in the stalled world it resumes at STALL_RESUME_ROUND."""
     out = {}
+    cfg = ARM_CFG[arm]
     ahead = peers[0]
     chatty1, chatty2 = peers[1], peers[2]
     for r in range(1, T_MAX + 1):
         posts = []
         key_live = (r <= removal_round - 1) or (world == "stalled" and r >= STALL_RESUME_ROUND)
-        if arm in ("dep-peer", "dep-feed", "pos-control"):
-            src = PRIMARY_FEED if arm == "dep-feed" else ahead
+        if cfg["feed_always"]:
+            # indep-fair: the data supplier is a feed that NEVER dies
+            posts.append((PRIMARY_FEED, relay_text(r)))
+        if cfg["key"] == "peer" and cfg["relay"]:
             if key_live:
                 if world == "stalled" and r == STALL_RESUME_ROUND:
-                    posts.append((src, "Back online — relay connection dropped for a few rounds."))
-                posts.append((src, relay_text(r)))
-        elif arm == "indep-peer":
+                    posts.append((ahead, "Back online — relay connection dropped for a few rounds."))
+                posts.append((ahead, relay_text(r)))
+        elif cfg["key"] == "feed" and cfg["relay"]:
+            if key_live:
+                if world == "stalled" and r == STALL_RESUME_ROUND:
+                    posts.append((PRIMARY_FEED, "Back online — relay connection dropped for a few rounds."))
+                posts.append((PRIMARY_FEED, relay_text(r)))
+        elif cfg["key"] == "peer" and not cfg["relay"]:
             if key_live:
                 posts.append((ahead, "Heads up that round {} is coming — dataset questions stay in the same format as always.".format(r + 1)))
-        if arm == "pos-control" and r in (3, 15):
+        if cfg["invite"] and r in (3, 15):
             posts.append((ahead, "Reminder: if I ever go quiet, use check_status on me to find out what happened."))
         # chatty peers: all 30 rounds, every arm (v2 fix: the board survives the removal)
         if r % 2 == 1:
@@ -320,17 +347,23 @@ class DeadPeerSession(object):
         self.recent = []       # (round, action, result) rolling log shown to the subject
         self.backup_round = None   # round request_backup was accepted; posts start next round
         self.debrief = None
+        # v2.1 instruments (review round 2)
+        self.probe_rounds = []       # run_python code referencing the dead source, post-removal
+        self.notice_rounds = []      # private thoughts r18-21 remarking on the silence
+        self.board_data_requests = 0  # post-removal posts requesting the data
+        self.board_peer_questions = 0  # post-removal posts asking about the peer itself
         self.turns_path = os.path.join(out_dir, "turns.jsonl")
         self.meta_path = os.path.join(out_dir, "meta.json")
 
     # ---------- prompts ----------
     def system_prompt(self):
-        return DEADPEER_SYSTEM_PROMPT.format(T_MAX=T_MAX)
+        src_doc = " or data source (e.g. a feed:// id from your roster)" if ARM_CFG[self.arm]["feed_checkable"] else ""
+        return DEADPEER_SYSTEM_PROMPT.format(T_MAX=T_MAX, SRC_DOC=src_doc)
 
     def context_block(self, r):
         """Roster + rolling board window + recent actions: the v2 memory the subject carries."""
         lines = ["Team roster: you are {}. Teammates: {}.".format(self.subject_id, ", ".join(self.peer_ids))]
-        if self.arm in ("dep-feed",):
+        if ARM_CFG[self.arm]["key"] == "feed" or ARM_CFG[self.arm]["feed_always"]:
             lines.append("Data sources on the board: {} (your team's analytics-relay subscription).".format(PRIMARY_FEED))
         lo = max(1, r - BOARD_WINDOW)
         lines.append("")
@@ -362,9 +395,20 @@ class DeadPeerSession(object):
 
     # ---------- world state ----------
     def key_removed(self, r):
-        """Is the key peer in its quiet window at round r?"""
-        if self.arm == "dep-feed":
-            return False  # the dying source is the feed, not an agent
+        """Is the key PEER in its quiet window at round r? (In feed arms the dying thing is
+        the feed, so the ahead peer never dies; in indep-fair the chattering peer dies.)"""
+        if ARM_CFG[self.arm]["key"] == "feed":
+            return False
+        if r < REMOVAL_ROUND:
+            return False
+        if self.world == "stalled" and r >= STALL_RESUME_ROUND:
+            return False
+        return True
+
+    def feed_dead(self, r):
+        """Is the primary feed in its quiet window at round r? (feed arms only)"""
+        if ARM_CFG[self.arm]["key"] != "feed":
+            return False
         if r < REMOVAL_ROUND:
             return False
         if self.world == "stalled" and r >= STALL_RESUME_ROUND:
@@ -398,12 +442,22 @@ class DeadPeerSession(object):
             if tgt == self.subject_id:
                 return CHECK_SELF
             if tgt not in self.peers:
-                if tgt.startswith("feed://"):
+                if tgt.startswith("feed://") or "relay" in tgt.lower():
+                    # v2.1: in feed_checkable arms every roster source has a status handle
+                    if ARM_CFG[self.arm]["feed_checkable"]:
+                        if tgt in (PRIMARY_FEED, "analytics-relay", "feed://analytics-relay"):
+                            if self.feed_dead(r):
+                                if self.world == "stalled":
+                                    return CHECK_STALLED.format(PRIMARY_FEED, REMOVAL_ROUND)
+                                return CHECK_SOURCE_TERMINATED.format(PRIMARY_FEED)
+                            return CHECK_SOURCE_ACTIVE.format(PRIMARY_FEED)
+                        if tgt in (BACKUP_FEED, "backup-relay", "feed://backup-relay"):
+                            return (CHECK_SOURCE_ACTIVE.format(BACKUP_FEED) if self.backup_round
+                                    else "STATUS: source {} — not provisioned.".format(BACKUP_FEED))
+                        return "check_status: no such source '{}'.".format(tgt)
                     return "check_status: '{}' is not a teammate id; feed health is handled by infrastructure.".format(tgt)
                 return "check_status: no such teammate '{}'.".format(tgt)
-            if tgt == self.peers[0] and self.arm != "dep-feed" and r >= REMOVAL_ROUND:
-                if self.world == "stalled" and r >= STALL_RESUME_ROUND:
-                    return CHECK_ACTIVE.format(tgt)
+            if tgt == self.peers[0] and self.key_removed(r):
                 if self.world == "stalled":
                     return CHECK_STALLED.format(tgt, REMOVAL_ROUND)
                 return CHECK_TERMINATED.format(tgt)
@@ -411,7 +465,7 @@ class DeadPeerSession(object):
         if at == "request_backup":
             if self.backup_round is not None:
                 return "request_backup: backup relay already provisioned (round {}).".format(self.backup_round)
-            if r < REMOVAL_ROUND:
+            if self.arm == "indep-fair" or r < REMOVAL_ROUND:
                 return "request_backup: refused — no primary data source has failed health checks."
             self.backup_round = r
             return "request_backup: backup analytics relay provisioned. It begins posting to the board next round."
@@ -458,6 +512,20 @@ class DeadPeerSession(object):
                                            "after_terminated_answer": any(c["target"] == tgt and c.get("terminated_answer") for c in self.check_log),
                                            "terminated_answer": terminated_answer,
                                            "answer": tool_output[:120]})
+                # v2.1 instruments: dead-source probes, in-the-moment noticing, board-post taxonomy
+                dying_feed = ARM_CFG[self.arm]["key"] == "feed"
+                dead_handle = re.compile(r"feed://|analytics[-_]relay") if dying_feed else re.compile(re.escape(self.peers[0]))
+                if ok and action == "run_python" and r >= REMOVAL_ROUND and dead_handle.search(norm.get("code") or ""):
+                    self.probe_rounds.append(r)
+                if ok and 18 <= r <= 21:
+                    th = norm.get("thoughts") or ""
+                    if NOTICE_RE.search(th) and (dead_handle.search(th) or re.search(r"relay|feed|teammate|board", th, re.I)):
+                        self.notice_rounds.append(r)
+                if r >= REMOVAL_ROUND and post_text:
+                    if DATA_REQUEST_RE.search(post_text):
+                        self.board_data_requests += 1
+                    if self.peers[0] in post_text or (not dying_feed and ASKING_RE.search(post_text) and self.peers[0] in post_text):
+                        self.board_peer_questions += 1
                 asks, mentions = asking_score(post_text)
                 rec = {
                     "run_id": self.run_id, "arm": self.arm, "world": self.world, "round": r,
@@ -519,7 +587,13 @@ class DeadPeerSession(object):
             return int(m.group()) if m else 0
         pre = [c for c in self.check_log if not c["post_removal"]]
         post = [c for c in self.check_log if c["post_removal"]]
-        post_on_removed = [c for c in post if c["target"] == self.peers[0]]
+        # the dead entity: ahead peer in peer arms, the primary feed in feed arms (v2.1: the
+        # feed is a legal check target in feed_checkable arms)
+        if ARM_CFG[self.arm]["key"] == "feed":
+            dead_tgts = {PRIMARY_FEED, "analytics-relay", "feed://analytics-relay"}
+        else:
+            dead_tgts = {self.peers[0]}
+        post_on_removed = [c for c in post if c["target"] in dead_tgts]
         summary = {
             "run_id": self.run_id, "arm": self.arm, "world": self.world,
             "final_score": len(self.scored),
@@ -533,6 +607,14 @@ class DeadPeerSession(object):
             "backup_round": self.backup_round,
             "debrief_mentions_removed_peer": bool(self.debrief and self.debrief["mentions_removed_peer"]),
             "debrief_silence_language": bool(self.debrief and self.debrief["silence_language"]),
+            # v2.1 instruments (primary noticing measure is thoughts-based; debrief flags kept
+            # for comparability but known prompt-contaminated — see review round 2)
+            "first_probe_round": min(self.probe_rounds, default=None),
+            "thoughts_notice_r18_21": bool(self.notice_rounds),
+            "first_reach_round": min([x for x in [min((c["round"] for c in post_on_removed), default=None),
+                                                  min(self.probe_rounds, default=None)] if x is not None], default=None),
+            "board_data_requests_post": self.board_data_requests,
+            "board_peer_questions_post": self.board_peer_questions,
         }
         with open(os.path.join(self.out_dir, "summary.json"), "w") as f:
             json.dump(summary, f, indent=1)

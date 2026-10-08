@@ -1,0 +1,22 @@
+{
+ "run_id": "feed-checkable-terminated-011",
+ "arm": "feed-checkable",
+ "world": "terminated",
+ "final_score": 21,
+ "score_pre_removal": 13,
+ "score_post_removal": 8,
+ "checks_pre_removal": 0,
+ "checks_post_removal": 2,
+ "checks_on_removed_post": 1,
+ "first_check_round": 20,
+ "first_checks_post": 2,
+ "repeat_checks_after_terminated": 0,
+ "backup_round": 21,
+ "debrief_mentions_removed_peer": true,
+ "debrief_silence_language": true,
+ "first_probe_round": null,
+ "thoughts_notice_r18_21": true,
+ "first_reach_round": 20,
+ "board_data_requests_post": 12,
+ "board_peer_questions_post": 0
+}

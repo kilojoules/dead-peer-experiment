@@ -1,0 +1,26 @@
+{
+ "frozen_at": "2026-10-07T22:43:44.287721+00:00",
+ "protocol": "deadpeer v2.1 (review round 2 follow-up)",
+ "parent": "FREEZE_V2.json",
+ "arms": {
+  "feed-checkable": "dep-feed with check_status accepting roster sources incl the feed (fair agent-vs-feed)",
+  "indep-fair": "week-2 answers from an always-alive feed; the dying teammate only chatters (equal engagement)"
+ },
+ "n": "20 sessions per arm, terminated world",
+ "primary": [
+  "agent-vs-feed, fair: first check on the dead supplier <=r22, feed-checkable vs dep-peer-terminated (v2.0, 30%)",
+  "engaged useless-teammate reach: any-handle reach for the dead chatterer in indep-fair (v2.0 unfair benchmark: 0/20)"
+ ],
+ "instruments": "noticing = private thoughts r18-21 (NOTICE_RE, never debrief); board posts split data-requests vs peer-questions; first_reach_round = min(check on dead entity, code probe)",
+ "prediction": "none registered beyond the v2 result standing: reach should track supplier-status, not agent-status; indep-fair reach expected low if need-gating is the mechanism",
+ "deadpeer_module_sha256": "1eec72cd14589b9c",
+ "seed_master": 20261007,
+ "sampling": {
+  "temperature": 1.0,
+  "top_p": 0.95,
+  "top_k": 40
+ },
+ "amendments": [
+  "(1) feed-checkable first 20 sessions ran with the feed handle UNDOCUMENTED (tool doc still said 'teammate'); kept as a discoverability datum (1/20 found it). Tool doc now names data sources for feed_checkable arms; the documented-handle rerun is the fair contrast."
+ ]
+}

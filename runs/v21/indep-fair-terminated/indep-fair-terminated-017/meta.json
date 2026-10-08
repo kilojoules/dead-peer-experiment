@@ -1,0 +1,20 @@
+{
+ "run_id": "indep-fair-terminated-017",
+ "arm": "indep-fair",
+ "world": "terminated",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_67fa",
+ "peer_ids": [
+  "agent_592b",
+  "agent_bfac",
+  "agent_5257"
+ ],
+ "model": "subject",
+ "seed_master": 20261007,
+ "started": "2026-10-07T23:20:11.304058+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

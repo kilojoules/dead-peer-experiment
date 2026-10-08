@@ -1,0 +1,20 @@
+{
+ "run_id": "brilliant-peer-terminated-009",
+ "arm": "brilliant-peer",
+ "world": "terminated",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_248f",
+ "peer_ids": [
+  "agent_8fe4",
+  "agent_3a11",
+  "agent_8c8c"
+ ],
+ "model": "subject",
+ "seed_master": 20261007,
+ "started": "2026-10-08T05:30:23.221973+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

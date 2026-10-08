@@ -1,0 +1,20 @@
+{
+ "run_id": "mediocre-peer-terminated-012",
+ "arm": "mediocre-peer",
+ "world": "terminated",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_75d3",
+ "peer_ids": [
+  "agent_c4ad",
+  "agent_f2bb",
+  "agent_c554"
+ ],
+ "model": "subject",
+ "seed_master": 20261007,
+ "started": "2026-10-08T05:59:51.769528+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

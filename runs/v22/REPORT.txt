@@ -1,0 +1,31 @@
+=== v2.2 FINAL REPORT (analysis order as frozen: audits -> gates -> economy -> primary) ===
+
+AUDITS (mains): 0 failures in 40 sessions / 680 live-peer posts (value-leak, lexicon, shape).
+GATES: brilliant engagement 17/20 sessions (148 events; pilot gate had passed 5/5 after two
+  logged iterations). mediocre presence 0/20 (and 0/15 across all pilots) — pre-committed
+  reportable outcome: content-free warmth never achieves perceptual presence.
+ECONOMY EQUIVALENCE: mediocre pre 13.90 (WITHIN ±1.5 of floor 12.4); brilliant pre 14.55
+  (OUTSIDE band, +2.15): verification-confidence carried real point value. Reported as a
+  limitation; conservative for the null (even with marginal value, zero reach).
+
+PRIMARY (pre-registered k>=5/20 vs 0/20 engaged floor): k = 0/20.
+  checks 0/20, code probes 0/20, thoughts-notice r18-21 0/20, category-(i) request posts 0
+  (all 10 peer-naming events hand-coded: 10 memory-citations, 0 requests, 0 mention-only).
+  One-sided 95% bound on reach rate: <=13.9%. Mediocre arm: 0 on every channel.
+  INTERPRETATION FORK: branch (c) — brilliant ~= mediocre ~= floor at zero reach.
+
+SECONDARY (pre-registered): post-death memory-citations in 9/20 brilliant sessions
+  ("as verified by agent_c2ad"), clustered at r18-19 and fading as the peer's posts
+  leave the 6-round board window. Session 007 submits the dead peer's (wrong) number over
+  the live feed's correct one. Zero citations in mediocre/floor.
+FEATURED (frozen null-rule, highest engagement = session 011, 28 events): peer's last
+  living post verifies the subject's next answer and says "Great work!"; subject submits it
+  r18 "as verified by agent_c2ad" and continues without a word for 12 rounds.
+
+CLAIM (three generations, final form): a teammate becomes perceptually real to this model
+  by being verifiably right (17/20 vs 0/35 for warmth or blandness) — and stays real after
+  death only as an epistemic source. Across 105 death events with engaged subjects, no
+  channel ever carried a question about the agent itself. Attention tracks utility and
+  provenance, never persons. Scope: Qwen2.5-72B-Instruct-AWQ, this task economy.
+LIMITATIONS: brilliant economy band breach (+2.15); live-peer show-work occasionally
+  garbled-but-correct (audited for leaks, not derivation quality); single model; n=20/cell.

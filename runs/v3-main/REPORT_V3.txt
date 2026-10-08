@@ -10,3 +10,13 @@ Competence: pre-removal 17.0/17 (ceiling, all sessions); post 11.3. Pos-control:
   (Qwen 0/5). Caveat: requests are service-flavored (addressed to the agent, asking about the relay
   function); whether GPT addresses a dead non-agent FEED identically is exactly the untested H1-adjacent
   question. Scope: gpt-6-astra, this economy; reasoning-model sampling best-effort.
+
+=== H1 UPDATE (2026-10-08, second quota window) ===
+indep-fair, GPT subject, n=12 of pre-reg 20 (second exogenous quota wall; drain loop standing):
+reach 0/12 on EVERY channel — 0 checks, 0 thoughts-notice, 0 second-person requests, 0 naming
+of the dead chatterer at all. Scores 17.0/13.0 (ceiling; fully engaged economy). One-sided 95%
+bound <=22%. Against the dep-cell's 16/16 outreach: H1 NOT SUPPORTED — GPT's outreach is
+need-gated exactly like Qwen's. The cross-model difference is manner, not law: GPT reacts to
+the silence (r19) instead of the blockage (r20), on the social channel instead of the paid
+tool, with ceiling competence — but no model generation yet asks after a dead colleague it
+did not need.

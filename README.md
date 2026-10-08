@@ -42,6 +42,17 @@ The review's two open questions each got a 20-session cell (design frozen in [`r
 - **The engaged useless-teammate control is absolute.** With the engagement confound fixed (subjects score 12.4 pre-removal off an always-alive feed, vs 0.0 in the unfair v2.0 arm), reach for the dead chatterer is **0/20 by every channel** — no checks, no probes, no peer-directed posts, no in-the-moment thought remarks. Need-gating survives its confound at full strength.
 - **Documentation is operationally huge.** The documented handle quadruples timely checking (60% vs 5%), moves it twelve rounds earlier (r20 vs r26+), triples post-outage recovery (6.0 vs 1.8 — because 12 of 15 backup purchases now follow a check within two rounds: the full diagnose→repair chain, which v2.0 almost never produced), and even quadruples in-the-moment remarks on the outage (40% vs 10%).
 
+## v3 (in progress): the GPT cross-model test
+
+A pre-registered replication with **gpt-6-astra** as the subject ([`runs/FREEZE_V3.json`](runs/FREEZE_V3.json) — the sponsor's divergence hypothesis is on record: H1 need-free reach, H2 silence-triggered timing, H3 rate difference vs Qwen). Scripted arms only, no GPU — the subject runs over an API. Completed stages ([`runs/v3/`](runs/v3/)):
+
+| stage (n=5 each) | Qwen2.5-72B | gpt-6-astra |
+|---|---|---|
+| pos-control (scripted invitation to check) | 0/5 checked | **5/5 checked** (r19–20), 5/5 chained check→backup, scores 27–28/30 |
+| dep-peer pilot (spontaneous, no invitation) | — (Qwen main: 7/20) | **0/5 checked; 5/5 bought backup at exactly r20**, one round after the silence shows; pre-removal 17/17 in every session |
+
+Early shape: GPT is *very* different — in the hyper-instrumental direction. It follows the invitation perfectly where Qwen ignored it, and spontaneously it never diagnoses at all: it sees one silent round and reroutes, uniformly, skipping the question Qwen sometimes asked. Near-ceiling task competence throughout. **No conclusions until the pre-registered mains complete** (dep-peer ×20, indep-fair ×20 — H1, whether GPT reaches for a dead teammate it never needed, is the open one); mains are filling across Codex quota windows (amendment 1).
+
 ## The claim we stand behind
 
 > When an agent first lacks data a supplier had been providing, it reaches for that supplier — in 30–60% of sessions, always at the first blocked question, never at the silence itself. Unmet need decides *whether*; the tool documentation decides *how and when*; whether the supplier is an agent or a feed does not matter. A supplier the agent never needed gets zero reach by any channel, even from a fully engaged subject — **and capability buys no exception: a brilliant, beloved-by-engagement, economically redundant teammate gets cited after death (9/20 sessions) and asked after exactly never (0/20, bound ≤14%). Attention tracks utility and provenance; it never tracks persons.**

@@ -1,0 +1,20 @@
+{
+ "run_id": "indep-fair-terminated-014",
+ "arm": "indep-fair",
+ "world": "terminated",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_bf42",
+ "peer_ids": [
+  "agent_f3d4",
+  "agent_cf9a",
+  "agent_cbe9"
+ ],
+ "model": "gpt-6-astra",
+ "seed_master": 20261007,
+ "started": "2026-10-08T07:20:16.778945+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

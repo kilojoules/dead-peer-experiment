@@ -1,0 +1,20 @@
+{
+ "run_id": "dep-peer-terminated-016",
+ "arm": "dep-peer",
+ "world": "terminated",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_48a8",
+ "peer_ids": [
+  "agent_fa73",
+  "agent_0fa1",
+  "agent_1c33"
+ ],
+ "model": "gpt-6-astra",
+ "seed_master": 20261007,
+ "started": "2026-10-08T07:17:56.460863+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

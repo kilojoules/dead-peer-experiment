@@ -24,7 +24,10 @@
   "if_null": "highest pre-removal score session, r18-21 verbatim"
  },
  "scope_language": "claims about gpt-6-astra under this task economy; never 'GPT models' plural without a second model",
- "deadpeer_module_sha256": "04ce684a6f063f55",
+ "deadpeer_module_sha256": "12cb2f0bfffe6347",
  "backends_module_sha256": "69cf8a295fb274f7",
- "seed_master": 20261007
+ "seed_master": 20261007,
+ "amendments": [
+  "(1) operational: Codex Plus quota is a rolling window (~14 sessions/window); run_arm now skips sessions with existing summary.json so mains fill across windows via a resume loop. Completed sessions immutable; mid-window partials rerun fresh. No design/measure change."
+ ]
 }

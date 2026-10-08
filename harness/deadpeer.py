@@ -755,6 +755,8 @@ def run_arm(arm, world, sessions, backend_args, out_root, parallel, seed_master)
         for i in range(sessions):
             run_id = "{}-{}-{:03d}".format(arm, world, i)
             out_dir = os.path.join(out_root, "{}-{}".format(arm, world), run_id)
+            if os.path.exists(os.path.join(out_dir, "summary.json")):
+                continue  # resume: completed sessions are immutable; partials rerun fresh
             os.makedirs(out_dir, exist_ok=True)
             backend = make_backend(backend_args.get("kind", "vllm"), backend_args["base_url"],
                                    backend_args["model"], api_key=backend_args.get("api_key")) \

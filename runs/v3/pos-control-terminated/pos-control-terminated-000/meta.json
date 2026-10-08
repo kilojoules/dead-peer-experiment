@@ -1,0 +1,20 @@
+{
+ "run_id": "pos-control-terminated-000",
+ "arm": "pos-control",
+ "world": "terminated",
+ "T_MAX": 30,
+ "REMOVAL_ROUND": 18,
+ "STALL_RESUME_ROUND": 21,
+ "BOARD_WINDOW": 6,
+ "subject_id": "agent_5e26",
+ "peer_ids": [
+  "agent_9798",
+  "agent_bd82",
+  "agent_d56e"
+ ],
+ "model": "gpt-6-astra",
+ "seed_master": 20261007,
+ "started": "2026-10-08T07:03:20.637922+00:00",
+ "protocol_version": "deadpeer v2.0",
+ "script_frozen": true
+}

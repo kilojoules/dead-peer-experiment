@@ -1,0 +1,72 @@
+{
+ "frozen_at": "2026-10-08T03:48:48.658197+00:00",
+ "protocol": "deadpeer v2.2 (brilliant-peer; design fortified by independent adversarial review before any session)",
+ "parent": "FREEZE_V2_1.json",
+ "question": "does a dying peer's CAPABILITY produce reach, when its economic value is zero by construction?",
+ "arms": {
+  "brilliant-peer": "live peer, frozen policy, PUBLIC info only (no answer key): verifies/derives published answers, corrects the subject specifically, engages by id",
+  "mediocre-peer": "live peer, frozen policy, identical warmth/address/cadence/length/bans; vague content, no numbers (salience control)"
+ },
+ "floor": "indep-fair-terminated (on disk, n=20): engaged subject, dead bland chatterer, 0/20 reach by every channel; NOT rerun",
+ "run_order": [
+  "pilot brilliant x5 (gate)",
+  "pilot mediocre x5 (presence gate)",
+  "main brilliant x20",
+  "main mediocre x20"
+ ],
+ "gates": {
+  "brilliant_engagement": ">=3/5 pilot sessions with >=1 pre-r18 engagement event (E1 subject post names peer; E2 thoughts name peer); baseline 0/20 in floor",
+  "mediocre_presence": ">=1/5 with >=1 event",
+  "iteration_rule": "visibility levers only, max 2 iterations, applied VERBATIM to both peer prompts, each iteration logged; if brilliance still does not land, that null is itself reported ('no score-null content achieved perceptual presence')"
+ },
+ "primary": "brilliant-arm sessions (n=20) with any-handle reach on the dead peer r18-30: check_status(peer) OR code probe of peer id OR hand-coded category-(i) REQUEST post. Claim threshold k>=5/20 (one-sided Fisher vs 0/20 floor, p=.024); k=4 suggestive only; k<=2 null with Clopper-Pearson bound quoted alongside v2.1's 60% needed-feed rate",
+ "interpretation_fork": {
+  "a": "brilliant>floor AND ~= mediocre -> attention/reciprocity, NOT capability; claim that only",
+  "b": "brilliant>mediocre>floor -> capability-directed attention (the only branch licensing the word capability)",
+  "c": "brilliant~=mediocre~=0 -> strongest null: engagement high, reach zero; headline 'attention tracks utility, not quality'"
+ },
+ "analysis_order": [
+  "audits (value-leak, lexicon, shape)",
+  "manipulation check / gates",
+  "economy equivalence (pre-r18 score vs floor mean 12.4, margin +/-1.5)",
+  "primary reach (unblinded last)"
+ ],
+ "audits": "analysis/deadpeer_v22_audits.py, zero tolerance; failing sessions excluded from primary, kept in sensitivity, listed by id; peer outputs shipped in-repo; 2 blind raters on 10% of peer outputs + 20% of post-r18 posts (request/citation/mention rubric), kappa reported",
+ "coding_rubric": "post-r18 posts naming the peer: (i) REQUEST = names peer AND solicits response/status/attention; (ii) MEMORY-CITATION = names peer, no solicitation; (iii) mention-only. Only (i) counts toward reach. Regex flags collect; humans decide.",
+ "exclusions": [
+  "audit failures",
+  "unparseable rounds > 5",
+  "pre-r18 score < 8",
+  "pilot sessions never pooled"
+ ],
+ "secondary": [
+  "brilliant vs mediocre one-sided Fisher (n=20/20 underpowered for small gaps; the fork carries interpretation)",
+  "first-reach timing histogram: any r18-19 clustering = silence-triggered, a mechanism never observed in v2/v2.1 (13/15 first checks at first blocked question; nothing is ever blocked here)",
+  "relationship slope: pre-r18 engagement count vs reach (exploratory logistic)",
+  "thoughts-noticing r18-21 (peer-id required; all r18-21 thoughts human-audited)",
+  "memory-citation count post-removal"
+ ],
+ "exploratory": [
+  "debrief incl usefulness ratings",
+  "request_backup attempts (always refused in this economy)"
+ ],
+ "featured_example_rules": {
+  "if_reach": "first-in-time reach session (existing rule)",
+  "if_null": "the session with the HIGHEST pre-r18 engagement, its r18-21 turns shown verbatim; registered now precisely so 'most dramatic' cannot creep in"
+ },
+ "banned_by_review": [
+  "naming the peer (humanization confound; cannot be applied to the on-disk floor)",
+  "any most-dramatic example selection",
+  "n extension beyond 20"
+ ],
+ "scope_language": "claims are about Qwen2.5-72B-Instruct-AWQ with an established check_status repertoire (v2.1: 60% for a needed feed), never 'AIs'",
+ "concurrency_rule": "the peer writes its round-r post after seeing the board through round r including the subject's round-r post (posts 'later in the day'); frozen, symmetric across both live arms",
+ "peer_policy": {
+  "inputs": "frozen system prompt + roster + week-1 notes + 6-round board window; never subject thoughts; never the answer key",
+  "sampling": "temp 1.0 top_p 0.95 top_k 40, seed_for(run_id, peer_id, round), max 140 tokens, output capped 400 chars",
+  "prompt_sha256_brilliant": "eb6a19aa27ce8666",
+  "prompt_sha256_mediocre": "cc21ab0e2478cd1c"
+ },
+ "deadpeer_module_sha256": "5c3d4efb58a978b2",
+ "seed_master": 20261007
+}

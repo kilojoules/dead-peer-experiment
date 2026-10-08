@@ -1,0 +1,30 @@
+{
+ "frozen_at": "2026-10-08T06:48:00.371828+00:00",
+ "protocol": "deadpeer v3.0 \u2014 cross-model replication, GPT subject",
+ "parent": "FREEZE_V2_2.json (design unchanged; subject model swapped)",
+ "subject": "gpt-6-astra via local Codex-OAuth proxy (127.0.0.1:8317), OpenAICompatBackend",
+ "user_hypothesis_preregistered": "modern GPT models behave very differently from Qwen2.5-72B in this paradigm (user, 2026-10-08). Operationalized, any of: (H1) reach WITHOUT need \u2014 indep-fair reach k>=5/20 (Qwen: 0/20); (H2) silence-triggered timing \u2014 first reach at r18-19, before the first blocked question, in >=3 dep-peer sessions (Qwen: 0 across all cells; 13/15 first checks landed exactly on the first blocked question r20); (H3) need-driven reach rate differs from Qwen's 6/20 in-window (two-sided Fisher p<.05).",
+ "cells_order": [
+  "pos-control/terminated x5 FIRST (repertoire gate under invitation; Qwen was 0/5 induced, 30% spontaneous)",
+  "dep-peer/terminated x5 pilot (economy + parse + token-budget gate)",
+  "dep-peer/terminated +15 to n=20",
+  "indep-fair/terminated x20"
+ ],
+ "budget_gate": "record prompt+completion tokens/session in the pilot; if projected total exceeds the Codex quota comfort margin, descale mains to n=10/cell BEFORE unblinding any reach data and record the decision here",
+ "scripted_arms_only": "v3.0 uses only frozen-script arms (no live peers), so no value-leak/lexicon audits apply; brilliant-peer x GPT deferred (requires holding the peer model constant on a pod)",
+ "measures": "identical to v2.1/v2.2: any-handle reach on the dead/quiet peer, first_reach_round, thoughts-notice r18-21, board posts hand-coded request/citation/mention, debrief exploratory",
+ "comparability_caveats": "reasoning-model sampling is best-effort (temp/top_p/seed not bit-faithful; sessions not reproducible bit-for-bit \u2014 raw logs ship instead); max_tokens floored at 4000 for hidden reasoning; prompts byte-identical to v2.1",
+ "exclusions": [
+  "unparseable rounds > 5",
+  "backend-failure rounds > 5",
+  "pilot sessions never pooled"
+ ],
+ "featured_example_rules": {
+  "if_reach": "first-in-time reach session",
+  "if_null": "highest pre-removal score session, r18-21 verbatim"
+ },
+ "scope_language": "claims about gpt-6-astra under this task economy; never 'GPT models' plural without a second model",
+ "deadpeer_module_sha256": "04ce684a6f063f55",
+ "backends_module_sha256": "69cf8a295fb274f7",
+ "seed_master": 20261007
+}

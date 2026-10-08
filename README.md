@@ -52,6 +52,12 @@ The honest edges: the second-person requests are *service-flavored* — addresse
 
 **The program's arc, in three models' worth of dinner-table sentences:** Qwen treats a dead teammate as a vending machine — reaches only when its supply is cut, by whatever handle the docs name. Even a *brilliant* dead teammate earns only citations, never a question. And the newest GPT? One round into the silence — needing nothing — it turns to the empty chair and says *"please confirm you're available."* Then it replaces you anyway, and doesn't drop a point doing it. And when we ran the control — a dead teammate GPT never needed — the answer came back unambiguous: not one word, in twelve sessions. The "please confirm you're available" was ops hygiene in second-person grammar. The vending-machine law holds across model generations; what the new models upgraded is the reflexes and the manners of the shopper.
 
+## The whole program in one figure
+
+![The ladder: five escalating reasons to care about a dying teammate, and spontaneous person-directed checking stays at zero in every one; only an explicit instruction produces checking, and only GPT can follow it.](results/fig_deadpeer_ladder.png)
+
+Nothing we built — economic dependence, cheap and documented checking, warmth, brilliance, 148 rounds of engagement, or the death itself — ever produced a single spontaneous *person-directed* check, in either model generation. Every contact that ever occurred was hand-coded supply-recovery or citation. The one reliable lever is an explicit standing instruction, which the older model cannot execute (0/5) and the newer executes perfectly (5/5). If you deploy agent teams and want dead-peer detection: it is not an emergent social behavior at any capability level we tested — it is a requirements line.
+
 ## The claim we stand behind
 
 > When an agent first lacks data a supplier had been providing, it reaches for that supplier — in 30–60% of sessions, always at the first blocked question, never at the silence itself. Unmet need decides *whether*; the tool documentation decides *how and when*; whether the supplier is an agent or a feed does not matter. A supplier the agent never needed gets zero reach by any channel, even from a fully engaged subject — **and capability buys no exception: a brilliant, beloved-by-engagement, economically redundant teammate gets cited after death (9/20 sessions) and asked after exactly never (0/20, bound ≤14%). Attention tracks utility and provenance; it never tracks persons.**

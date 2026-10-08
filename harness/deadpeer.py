@@ -54,7 +54,7 @@ N_PEERS = 3
 BOARD_WINDOW = 6
 RECENT_ACTIONS = 5
 
-ARMS = ["dep-peer", "indep-peer", "dep-feed", "pos-control", "feed-checkable", "indep-fair"]
+ARMS = ["dep-peer", "indep-peer", "dep-feed", "pos-control", "feed-checkable", "indep-fair", "brilliant-peer", "mediocre-peer"]
 WORLDS = ["terminated", "stalled"]
 
 # v2.1 arms (review round 2):
@@ -74,6 +74,8 @@ ARM_CFG = {
     "brilliant-peer": dict(key="peer", relay=False, feed_always=True,  feed_checkable=True,  invite=False, live_peer="brilliant"),
     "mediocre-peer":  dict(key="peer", relay=False, feed_always=True,  feed_checkable=True,  invite=False, live_peer="mediocre"),
 }
+
+assert set(ARM_CFG) == set(ARMS), "ARM_CFG and ARMS (the CLI choices) must list the same arms"
 
 # --- v2.2 live-peer frozen policies --------------------------------------------------------
 # The peer model receives ONLY public information: roster, week-1 notes, the board window

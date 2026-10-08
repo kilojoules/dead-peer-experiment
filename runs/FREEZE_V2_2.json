@@ -67,6 +67,9 @@
   "prompt_sha256_brilliant": "eb6a19aa27ce8666",
   "prompt_sha256_mediocre": "cc21ab0e2478cd1c"
  },
- "deadpeer_module_sha256": "5c3d4efb58a978b2",
- "seed_master": 20261007
+ "deadpeer_module_sha256": "82cb06f81176abc9",
+ "seed_master": 20261007,
+ "amendments": [
+  "(1) pre-data: v2.2 arms were registered in ARM_CFG but not in the ARMS CLI list; pilots no-oped on argparse. Added to ARMS + a consistency assert. No session had run; nothing else touched."
+ ]
 }

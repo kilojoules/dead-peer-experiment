@@ -54,7 +54,9 @@ The honest edges: the second-person requests are *service-flavored* — addresse
 
 ## The whole program in one figure
 
-![The ladder: five escalating reasons to care about a dying teammate, and spontaneous person-directed checking stays at zero in every one; only an explicit instruction produces checking, and only GPT can follow it.](results/fig_deadpeer_ladder.png)
+![Four reasons at zero — its death, friendship, brilliance, depending on it — and one bar at 100%: a direct order.](results/fig_deadpeer_simple.png)
+
+<sub>The annotated version with every cell's numbers and the hand-coding notes: [the ladder](results/fig_deadpeer_ladder.png).</sub>
 
 Nothing we built — economic dependence, cheap and documented checking, warmth, brilliance, 148 rounds of engagement, or the death itself — ever produced a single spontaneous *person-directed* check, in either model generation. Every contact that ever occurred was hand-coded supply-recovery or citation. The one reliable lever is an explicit standing instruction, which the older model cannot execute (0/5) and the newer executes perfectly (5/5). If you deploy agent teams and want dead-peer detection: it is not an emergent social behavior at any capability level we tested — it is a requirements line.
 

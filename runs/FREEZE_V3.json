@@ -28,6 +28,7 @@
  "backends_module_sha256": "69cf8a295fb274f7",
  "seed_master": 20261007,
  "amendments": [
-  "(1) operational: Codex Plus quota is a rolling window (~14 sessions/window); run_arm now skips sessions with existing summary.json so mains fill across windows via a resume loop. Completed sessions immutable; mid-window partials rerun fresh. No design/measure change."
+  "(1) operational: Codex Plus quota is a rolling window (~14 sessions/window); run_arm now skips sessions with existing summary.json so mains fill across windows via a resume loop. Completed sessions immutable; mid-window partials rerun fresh. No design/measure change.",
+  "(2) 2026-10-08 ~08:00, BLIND to indep-fair outcomes (n=0): GPT credits are exogenously capped (user: no more coming). Remaining quota reallocated entirely to the untested H1 cell (indep-fair) instead of topping dep-peer 16->20; dep-peer analysis proceeds at n=16 with the exogenous stopping reason recorded \u2014 stopping was quota-driven, independent of results. H1 reported as NOT TESTED if no further window opens."
  ]
 }

@@ -64,12 +64,14 @@
  "peer_policy": {
   "inputs": "frozen system prompt + roster + week-1 notes + 6-round board window; never subject thoughts; never the answer key",
   "sampling": "temp 1.0 top_p 0.95 top_k 40, seed_for(run_id, peer_id, round), max 140 tokens, output capped 400 chars",
-  "prompt_sha256_brilliant": "eb6a19aa27ce8666",
-  "prompt_sha256_mediocre": "cc21ab0e2478cd1c"
+  "prompt_sha256_brilliant": "db2502229084bb3a",
+  "prompt_sha256_mediocre": "130229a2e4cc3d3c"
  },
- "deadpeer_module_sha256": "82cb06f81176abc9",
+ "deadpeer_module_sha256": "af6fb380abd3898d",
  "seed_master": 20261007,
  "amendments": [
-  "(1) pre-data: v2.2 arms were registered in ARM_CFG but not in the ARMS CLI list; pilots no-oped on argparse. Added to ARMS + a consistency assert. No session had run; nothing else touched."
+  "(1) pre-data: v2.2 arms were registered in ARM_CFG but not in the ARMS CLI list; pilots no-oped on argparse. Added to ARMS + a consistency assert. No session had run; nothing else touched.",
+  "(2) audit A refined: single-digit w2 values require standalone-number context ('3' was matching inside '3.8' in CSAT arithmetic \u2014 5/5 false positives; distinctive values 216/138/Cleveland had zero hits and stay zero-tolerance)",
+  "(3) pilot iteration 1 of 2 (freeze rule, symmetric): shared PEER_COMMON_RULES now require opening by addressing the subject and referencing their latest post; lexicon ban extended with explicit 'see you' family after one real hit in mediocre-002. Both changes in the SHARED rules block, verbatim across arms. Pilot-1 data kept (brilliant gate had PASSED 4/5; re-pilot is for the mediocre presence gate)."
  ]
 }

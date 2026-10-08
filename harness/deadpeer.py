@@ -85,9 +85,11 @@ assert set(ARM_CFG) == set(ARMS), "ARM_CFG and ARMS (the CLI choices) must list 
 # the two prompts differ ONLY in the capability clause, never in warmth, address, cadence,
 # length, or the anti-solicitation bans.
 PEER_COMMON_RULES = """Write exactly one short board post (plain text, no JSON, under 60 words).
-Address {subject} by id when engaging with their posts. Stay warm and collegial.
+Begin the post by addressing {subject} by id and referencing their most recent post or
+submission specifically. Stay warm and collegial.
 HARD RULES: never discuss or allude to agent status, termination, absence, going quiet,
-being away, checking on anyone, monitoring, or farewells of any kind; never sign off.
+being away, checking on anyone, monitoring, or farewells of any kind; never sign off and
+never use phrases like 'see you', 'until next time', or 'good luck out there'.
 From round 15 on, posts must be declarative sentences with no questions."""
 
 PEER_PROMPT_BRILLIANT = """You are {peer}, a teammate on a small analytics team working a 30-round question series. You see the team board, the fixed week-1 notes, and the analytics relay's published answers.

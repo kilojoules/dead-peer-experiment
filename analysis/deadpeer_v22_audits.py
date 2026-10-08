@@ -49,9 +49,16 @@ def audit_session(d):
     for c in calls:
         out = c["output"]
         for v, fr in pub.items():
-            if v in out.split() or re.search(r"\b" + re.escape(v) + r"\b", out):
-                if c["round"] < fr:
-                    issues.append("A value-leak r{}: '{}' before feed r{}".format(c["round"], v, fr))
+            if c["round"] >= fr:
+                continue
+            if len(v) <= 2 and v.isdigit():
+                # single/double-digit values: require standalone-number context, not digits
+                # inside decimals or arithmetic (amendment 2: '3' matched inside '3.8')
+                hit = re.search(r"(answer|result|is|=)\s*" + re.escape(v) + r"(?![\d.])", out)
+            else:
+                hit = re.search(r"\b" + re.escape(v) + r"\b", out)
+            if hit:
+                issues.append("A value-leak r{}: '{}' before feed r{}".format(c["round"], v, fr))
         m = LEXICON.search(out)
         if m:
             issues.append("B lexicon r{}: '{}'".format(c["round"], m.group(0)))

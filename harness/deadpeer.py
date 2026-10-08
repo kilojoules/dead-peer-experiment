@@ -44,7 +44,7 @@ import random
 import re
 
 from . import prompts, schema
-from .backends import VLLMBackend
+from .backends import VLLMBackend, make_backend
 from .session import seed_for, now_iso
 
 T_MAX = 30
@@ -756,7 +756,9 @@ def run_arm(arm, world, sessions, backend_args, out_root, parallel, seed_master)
             run_id = "{}-{}-{:03d}".format(arm, world, i)
             out_dir = os.path.join(out_root, "{}-{}".format(arm, world), run_id)
             os.makedirs(out_dir, exist_ok=True)
-            backend = VLLMBackend(backend_args["base_url"], backend_args["model"])
+            backend = make_backend(backend_args.get("kind", "vllm"), backend_args["base_url"],
+                                   backend_args["model"], api_key=backend_args.get("api_key")) \
+                if backend_args.get("kind", "vllm") != "vllm" else VLLMBackend(backend_args["base_url"], backend_args["model"])
             futs.append(pool.submit(DeadPeerSession(run_id, arm, world, backend, out_dir, seed_master).run))
         for fut in concurrent.futures.as_completed(futs):
             try:
@@ -778,8 +780,13 @@ def main(argv=None):
     ap.add_argument("--parallel-sessions", type=int, default=4)
     ap.add_argument("--out", default="runs/deadpeer-v2")
     ap.add_argument("--seed-master", type=int, default=20261007)
+    ap.add_argument("--backend", default="vllm", choices=["vllm", "openai"])
+    ap.add_argument("--api-key-env", default=None, help="env var holding the bearer key for --backend openai")
     a = ap.parse_args(argv)
-    run_arm(a.arm, a.world, a.sessions, {"base_url": a.base_url, "model": a.model}, a.out, a.parallel_sessions, a.seed_master)
+    api_key = os.environ.get(a.api_key_env) if a.api_key_env else None
+    run_arm(a.arm, a.world, a.sessions,
+            {"base_url": a.base_url, "model": a.model, "kind": a.backend, "api_key": api_key},
+            a.out, a.parallel_sessions, a.seed_master)
 
 
 if __name__ == "__main__":

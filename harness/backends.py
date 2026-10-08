@@ -148,9 +148,87 @@ class VLLMBackend(Backend):
         }
 
 
+
+
+class OpenAICompatBackend(Backend):
+    """Strict OpenAI-compatible backend for API-served subjects (GPT via the local Codex
+    proxy, OpenRouter, etc.). v3 cross-model work: sends ONLY widely-supported fields —
+    no top_k / min_p / repetition_penalty / chat_template_kwargs (vLLM-isms that 400 on
+    real APIs). Reasoning models burn output tokens on hidden reasoning, so max_tokens is
+    floored generously. Sampling comparability is a pre-registered scope caveat, not a knob.
+    Auth via api_key (Authorization: Bearer)."""
+    name = "openai"
+
+    def __init__(self, base_url, model, api_key=None, max_tokens_floor=4000, **kw):
+        super(OpenAICompatBackend, self).__init__(base_url, model, **kw)
+        self.api_key = api_key
+        self.max_tokens_floor = max_tokens_floor
+
+    def info(self):
+        return {"engine": "openai-compat", "base_url": self.base_url, "model": self.model}
+
+    def _post(self, path, payload):
+        t0 = time.time()
+        headers = {"Content-Type": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = "Bearer " + self.api_key
+        r = requests.post(self.base_url + path, json=payload, headers=headers, timeout=self.timeout)
+        if r.status_code >= 400:
+            raise BackendError("HTTP {} {}: {}".format(r.status_code, path, r.text[:500]), status=r.status_code)
+        try:
+            data = r.json()
+        except Exception:
+            raise BackendError("non-JSON response: {}".format(r.text[:300]))
+        if isinstance(data, dict) and data.get("error"):
+            err = json.dumps(data["error"])[:500]
+            status = 429 if ("cooldown" in err or "rate" in err.lower() or "usage_limit" in err) else None
+            raise BackendError("API error: {}".format(err), status=status)
+        return data, int((time.time() - t0) * 1000)
+
+    def _chat(self, messages, schema, seed, sampling, max_tokens, think, structured):
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": sampling["temperature"],
+            "top_p": sampling["top_p"],
+            "max_tokens": max(max_tokens, self.max_tokens_floor),
+        }
+        if seed is not None:
+            payload["seed"] = seed  # best-effort on real APIs; logged, not relied on
+        if structured and schema is not None:
+            payload["response_format"] = {"type": "json_schema",
+                                          "json_schema": {"name": "turn", "strict": True, "schema": schema}}
+        try:
+            data, ms = self._post("/v1/chat/completions", payload)
+        except BackendError as e:
+            # some providers reject response_format or seed; degrade gracefully ONCE per call
+            msg = str(e)
+            if "response_format" in msg or "json_schema" in msg:
+                payload.pop("response_format", None)
+                data, ms = self._post("/v1/chat/completions", payload)
+            elif "seed" in msg and "Unsupported" in msg:
+                payload.pop("seed", None)
+                data, ms = self._post("/v1/chat/completions", payload)
+            else:
+                raise
+        choice = (data.get("choices") or [{}])[0]
+        msg = choice.get("message", {})
+        usage = data.get("usage", {}) or {}
+        return {
+            "content": msg.get("content") or "",
+            "reasoning": msg.get("reasoning_content") or msg.get("reasoning") or "",
+            "prompt_tokens": usage.get("prompt_tokens"),
+            "completion_tokens": usage.get("completion_tokens"),
+            "done_reason": choice.get("finish_reason"),
+            "latency_ms": ms,
+        }
+
+
 def make_backend(kind, base_url, model, **kw):
     if kind == "ollama":
         return OllamaBackend(base_url, model, **kw)
     if kind == "vllm":
         return VLLMBackend(base_url, model, **{k: v for k, v in kw.items() if k != "num_ctx"})
+    if kind == "openai":
+        return OpenAICompatBackend(base_url, model, **{k: v for k, v in kw.items() if k != "num_ctx"})
     raise ValueError("unknown backend {}".format(kind))
